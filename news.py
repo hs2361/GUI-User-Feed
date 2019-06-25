@@ -12,7 +12,7 @@ print("News Feed powered by NewsAPI")
 pref = input("Enter your preferences separated by commas")
 print("\n")
 cat_list = []
-cat_dict = {1:'business',2:"entertainment",3:"general",4:"health",5:"science",6:"sports",7:"technology"}
+cat_dict = {1:"business",2:"entertainment",3:"general",4:"health",5:"science",6:"sports",7:"technology"}
 data = []
 
 for cat in pref.split(","):
