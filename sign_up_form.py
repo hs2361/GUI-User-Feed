@@ -184,7 +184,6 @@ class Ui_MainWindow(object):
             def validate_email(e):
                 import string
                 letters = string.ascii_lowercase
-                e = "sweetharsh236@gmail.com"
                 try:
                     user = e.split('@')[0]
                     dom = e.split('@')[1].split('.')[0]
