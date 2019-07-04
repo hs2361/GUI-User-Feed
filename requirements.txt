@@ -2,4 +2,3 @@ PyQt5
 PyQt5-tools
 bs4
 privy
-getpass
