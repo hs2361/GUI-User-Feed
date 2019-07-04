@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'sign_up_form.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.3
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 email = ""
 class Ui_MainWindow(object):
@@ -40,19 +32,31 @@ class Ui_MainWindow(object):
         self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.EmailID)
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setObjectName("label_4")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.label_4)
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.LabelRole, self.label_4)
         self.Password = QtWidgets.QLineEdit(self.centralwidget)
         self.Password.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         self.Password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.Password.setObjectName("Password")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.Password)
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.FieldRole, self.Password)
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
         self.label_5.setObjectName("label_5")
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.label_5)
+        self.formLayout.setWidget(8, QtWidgets.QFormLayout.LabelRole, self.label_5)
         self.City = QtWidgets.QLineEdit(self.centralwidget)
         self.City.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.City.setObjectName("City")
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.City)
+        self.formLayout.setWidget(8, QtWidgets.QFormLayout.FieldRole, self.City)
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setObjectName("label_9")
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.label_9)
+        self.label_10 = QtWidgets.QLabel(self.centralwidget)
+        self.label_10.setObjectName("label_10")
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.label_10)
+        self.Server = QtWidgets.QLineEdit(self.centralwidget)
+        self.Server.setObjectName("Server")
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.Server)
+        self.Port = QtWidgets.QLineEdit(self.centralwidget)
+        self.Port.setObjectName("Port")
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.Port)
         self.formLayout_2.setLayout(0, QtWidgets.QFormLayout.SpanningRole, self.formLayout)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -131,7 +135,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.DialogBox = QtWidgets.QMessageBox(self.centralwidget)
         self.DialogBox.setIcon(QtWidgets.QMessageBox.Warning)
-        self.DialogBox.setText("Please fill all fields marked with *, and enter a valid Email ID")
+        self.DialogBox.setText("Please fill all fields marked with *, and enter a valid Email ID and SMTP Port")
         self.DialogBox.setWindowTitle("Error Submitting Form!")
         self.DialogBox.setStandardButtons(QtWidgets.QMessageBox.Cancel)
         self.DialogBox.setObjectName("DialogBox")
@@ -163,6 +167,8 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Password*"))
         self.label_5.setText(_translate("MainWindow", "City*"))
         self.label_7.setText(_translate("MainWindow", "Categories of news I am interested in receiving (Check atleast one)*:"))
+        self.label_9.setText(_translate("MainWindow", "SMTP Server*"))
+        self.label_10.setText(_translate("MainWindow", "SMTP Port*"))
         self.Health.setText(_translate("MainWindow", "Health"))
         self.Business.setText(_translate("MainWindow", "Business"))
         self.Technology.setText(_translate("MainWindow", "Technology"))
@@ -196,17 +202,20 @@ class Ui_MainWindow(object):
                 except:
                     return False
 
-            
+            def validate_port(p):
+                return all(map(lambda i: i in '0123456789',list(p)))
 
-            c1 = (self.Name.text() == "")
-            c2 = (self.EmailID.text() == "")
-            c3 = (self.Password.text() == "")
-            c4 = (self.City.text() == "")
-            c5 = not any([self.Business.isChecked(),self.Entertainment.isChecked(),self.General.isChecked(),self.Health.isChecked(),self.Science.isChecked(),self.Sports.isChecked(),self.Technology.isChecked()])
+            c1 = (self.Name.text() != "")
+            c2 = (self.EmailID.text() != "")
+            c3 = (self.Password.text() != "")
+            c4 = (self.City.text() != "")
+            c5 = any([self.Business.isChecked(),self.Entertainment.isChecked(),self.General.isChecked(),self.Health.isChecked(),self.Science.isChecked(),self.Sports.isChecked(),self.Technology.isChecked()])
             c6 = validate_email(self.EmailID.text())
-            return not any([c1,c2,c3,c4,c5,c6])
+            c7 = (self.Server.text() != "")
+            c8 = validate_port(self.Port.text())
+            return all([c1,c2,c3,c4,c5,c6,c7,c8])
         
-        def check_existing():
+        def check_existing(email):
             import os
             return os.path.isfile(f"{email.split('@')[0]}.txt")
 
@@ -224,7 +233,7 @@ class Ui_MainWindow(object):
             email = self.EmailID.text()
             password = self.Password.text()
             city = self.City.text()
-
+            
             with open(f"{email.split('@')[0]}.txt","w") as f:
                 f.write("\n".join([name,email,privy.hide(password.encode("utf-8"),password,security=5,salt=None,server=True),city]))
 
@@ -247,36 +256,21 @@ class Ui_MainWindow(object):
                 cat_list.append("technology")
             
             with open(f"{email.split('@')[0]}.txt","a") as f:
-                f.writelines("\n" + str(cat_list))
+                f.writelines("\n" + str(cat_list) + "\n")
 
         def other_preferences():
-            if self.Joke.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nTrue")
-            if not self.Joke.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nFalse")
-            
-            if self.Quote.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nTrue")
-            if not self.Quote.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nFalse")
+            SMTP_SERVER = self.Server.text()
+            SMTP_PORT = self.Port.text()
+            with open(f"{email.split('@')[0]}.txt","a") as f:
+                f.write("\n".join([str(self.Joke.isChecked()),str(self.Quote.isChecked()),str(self.Word.isChecked()),SMTP_SERVER,SMTP_PORT]))
 
-            if self.Word.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nTrue")
-            if not self.Word.isChecked():
-                with open(f"{email.split('@')[0]}.txt","a") as f:
-                    f.writelines("\nFalse")
-
-        if not check_existing() and validate_city(self.City.text()) and validate_form():                
+        if (not check_existing(self.EmailID.text())) and validate_city(self.City.text()) and validate_form():                
             personal_information()
             news_preferences()
             other_preferences()
+            self.Clear.click()
 
-        elif check_existing:
+        elif check_existing(self.EmailID.text()):
             self.DialogBox2.exec_()
 
         elif not validate_city(self.City.text()):
@@ -284,12 +278,15 @@ class Ui_MainWindow(object):
 
         else:
             self.DialogBox.exec_()
+            
 
     def clear_form(self):
         self.Name.setText("")
         self.EmailID.setText("")
         self.Password.setText("")
         self.City.setText("")
+        self.Server.setText("")
+        self.Port.setText("")
 
         self.Business.setChecked(False)
         self.Entertainment.setChecked(False)
