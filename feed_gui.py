@@ -18,8 +18,8 @@ news_cat_list = ""
 joke = ""
 quote = ""
 word = ""
-SMTP_SERVER = "imap.gmail.com"
-SMTP_PORT   = 993
+SMTP_SERVER = ""
+SMTP_PORT   = ""
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -112,7 +112,7 @@ class Ui_MainWindow(object):
     def disp_basics(self):
         def disp_name():
             with open("signedin.txt","r") as f:
-                global emailid,password,city,news_cat_list,joke,quote,word
+                global emailid,password,city,news_cat_list,joke,quote,word,SMTP_SERVER,SMTP_PORT
                 lines = f.readlines()
                 emailid = lines[0]
                 password = base64.b64decode(lines[1].encode("utf-8")).decode("utf-8")
@@ -124,10 +124,11 @@ class Ui_MainWindow(object):
                 joke = ast.literal_eval(lines[5])
                 quote = ast.literal_eval(lines[6])
                 word = ast.literal_eval(lines[7])
+                SMTP_SERVER = lines[8].replace("\n","")
+                SMTP_PORT = int(lines[9])
             self.WelcomeLabel.setText(f"Welcome, {name}!")
 
         def disp_email():
-            global SMTP_SERVER,SMTP_PORT
             M = imaplib.IMAP4_SSL(SMTP_SERVER,SMTP_PORT)
             M.login(emailid,password)
             M.select('inbox')
