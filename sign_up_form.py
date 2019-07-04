@@ -277,8 +277,7 @@ class Ui_MainWindow(object):
             self.DialogBox3.exec_()
 
         else:
-            self.DialogBox.exec_()
-            
+            self.DialogBox.exec_()         
 
     def clear_form(self):
         self.Name.setText("")
