@@ -26,5 +26,7 @@ pip install -r requirements.txt
 
 3.)Run ```sign_in.py``` and sign in with your profile.
 
-# Note
-[Gmail](http://www.gmail.com) users have to turn on access to less secure apps in their Google settings.
+# Notes
+A list of SMTP Servers and Port Numbers of popular email clients can be found [here](https://www.arclab.com/en/kb/email/list-of-smtp-and-pop3-servers-mailserver-list.html)
+
+[Gmail](http://www.gmail.com) users have to turn on access to less secure apps in their Google settings. Email servers requiring two-factor authentication are not supported.
